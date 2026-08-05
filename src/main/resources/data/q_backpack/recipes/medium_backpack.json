@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [" I ", "IBI", " I "],
+  "key": {
+    "I": { "item": "minecraft:iron_ingot" },
+    "B": { "item": "q_backpack:small_backpack" }
+  },
+  "result": { "item": "q_backpack:medium_backpack" }
+}

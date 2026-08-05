@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [" G ", "GBG", " G "],
+  "key": {
+    "G": { "item": "minecraft:gold_ingot" },
+    "B": { "item": "q_backpack:medium_backpack" }
+  },
+  "result": { "item": "q_backpack:large_backpack" }
+}

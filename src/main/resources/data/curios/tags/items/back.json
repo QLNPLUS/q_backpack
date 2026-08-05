@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "q_backpack:small_backpack",
+    "q_backpack:medium_backpack",
+    "q_backpack:large_backpack",
+    "q_backpack:huge_backpack"
+  ]
+}

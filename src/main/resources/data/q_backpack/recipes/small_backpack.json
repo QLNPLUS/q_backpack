@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [" L ", "LCL", " L "],
+  "key": {
+    "L": { "item": "minecraft:leather" },
+    "C": { "item": "minecraft:chest" }
+  },
+  "result": { "item": "q_backpack:small_backpack" }
+}

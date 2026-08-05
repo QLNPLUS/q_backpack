@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [" D ", "DBD", " D "],
+  "key": {
+    "D": { "item": "minecraft:diamond" },
+    "B": { "item": "q_backpack:large_backpack" }
+  },
+  "result": { "item": "q_backpack:huge_backpack" }
+}
