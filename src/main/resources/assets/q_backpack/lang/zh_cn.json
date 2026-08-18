@@ -3,6 +3,7 @@
   "item.q_backpack.medium_backpack": "铁制背包",
   "item.q_backpack.large_backpack": "金制背包",
   "item.q_backpack.huge_backpack": "钻石背包",
+  "item.q_backpack.netherite_backpack": "下界合金背包",
   "tooltip.q_backpack.capacity": "容量：%s 格",
   "tooltip.q_backpack.open": "右键装备",
   "tooltip.q_backpack.inventory": "装备后打开玩家物品栏使用",

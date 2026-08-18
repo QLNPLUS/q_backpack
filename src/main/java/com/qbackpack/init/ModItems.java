@@ -16,9 +16,10 @@ public final class ModItems {
     public static final RegistryObject<BackpackItem> MEDIUM_BACKPACK = register("medium_backpack", 18);
     public static final RegistryObject<BackpackItem> LARGE_BACKPACK = register("large_backpack", 27);
     public static final RegistryObject<BackpackItem> HUGE_BACKPACK = register("huge_backpack", 36);
+    public static final RegistryObject<BackpackItem> NETHERITE_BACKPACK = register("netherite_backpack", 52);
 
     public static final List<RegistryObject<BackpackItem>> BACKPACKS = List.of(
-            SMALL_BACKPACK, MEDIUM_BACKPACK, LARGE_BACKPACK, HUGE_BACKPACK);
+            SMALL_BACKPACK, MEDIUM_BACKPACK, LARGE_BACKPACK, HUGE_BACKPACK, NETHERITE_BACKPACK);
 
     private ModItems() {}
 

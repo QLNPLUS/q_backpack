@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [" N ", "NBN", " N "],
+  "key": {
+    "N": { "item": "minecraft:netherite_ingot" },
+    "B": { "item": "q_backpack:huge_backpack" }
+  },
+  "result": { "item": "q_backpack:netherite_backpack" }
+}

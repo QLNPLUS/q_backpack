@@ -23,14 +23,13 @@ import net.minecraft.world.inventory.InventoryMenu;
 import java.lang.reflect.Field;
 
 public final class BackpackScreen extends InventoryScreen {
-    private static final ResourceLocation BACKGROUND = new ResourceLocation(
-            QBackpack.MOD_ID, "textures/gui/backpack_gui.png");
+    private static final ResourceLocation SMALL_BACKGROUND = background("small_backpack");
+    private static final ResourceLocation MEDIUM_BACKGROUND = background("medium_backpack");
+    private static final ResourceLocation LARGE_BACKGROUND = background("large_backpack");
+    private static final ResourceLocation HUGE_BACKGROUND = background("huge_backpack");
+    private static final ResourceLocation NETHERITE_BACKGROUND = background("netherite_backpack");
     private static final ResourceLocation ICONS = new ResourceLocation(
             QBackpack.MOD_ID, "textures/gui/general_icons.png");
-    private static final int TOP_SECTION_HEIGHT = 82;
-    private static final int SOURCE_BACKPACK_ROWS = 3;
-    private static final int SOURCE_LOWER_Y = 136;
-    private static final int LOWER_SECTION_HEIGHT = 88;
     private static final String CNPC_TAB_CLASS = "noppes.npcs.client.gui.player.tabs.AbstractTab";
     private static final String CNPC_VANILLA_TAB_CLASS =
             "noppes.npcs.client.gui.player.tabs.InventoryTabVanilla";
@@ -39,12 +38,31 @@ public final class BackpackScreen extends InventoryScreen {
 
     private final BackpackMenu backpackMenu;
     private final Player player;
+    private final ResourceLocation background;
 
     public BackpackScreen(BackpackMenu menu, Inventory inventory, Component title) {
         super(useBackpackMenu(inventory.player, menu));
         this.backpackMenu = menu;
         this.player = inventory.player;
+        this.background = backgroundForMenu(menu);
         restoreInventoryMenu(player);
+    }
+
+    private static ResourceLocation background(String name) {
+        return new ResourceLocation(QBackpack.MOD_ID, "textures/gui/" + name + ".png");
+    }
+
+    private static ResourceLocation backgroundForMenu(BackpackMenu menu) {
+        if (menu.columns() == 13) {
+            return NETHERITE_BACKGROUND;
+        }
+        return switch (menu.rows()) {
+            case 1 -> SMALL_BACKGROUND;
+            case 2 -> MEDIUM_BACKGROUND;
+            case 3 -> LARGE_BACKGROUND;
+            case 4 -> HUGE_BACKGROUND;
+            default -> throw new IllegalArgumentException("Invalid backpack rows: " + menu.rows());
+        };
     }
 
     private static Player useBackpackMenu(Player player, BackpackMenu menu) {
@@ -58,11 +76,40 @@ public final class BackpackScreen extends InventoryScreen {
         previousInventoryMenu = null;
     }
 
+    public boolean hasExpandedBackpackLayout() {
+        return backpackMenu.columns() == 13;
+    }
+
+    public int expandedLayoutLeft() {
+        return backgroundLeft();
+    }
+
+    public int expandedLayoutRight() {
+        return backgroundLeft() + imageWidth - 36;
+    }
+
+    public int expandedLayoutTop() {
+        return topPos;
+    }
+
+    public int expandedLayoutHeight() {
+        return imageHeight;
+    }
+
     @Override
     protected void init() {
+        imageWidth = backpackMenu.columns() == 13 ? 248 : 176;
         imageHeight = 170 + backpackMenu.rows() * 18;
         super.init();
-        addRenderableWidget(new SortButton(leftPos + imageWidth - 18, topPos + 69));
+        if (hasExpandedBackpackLayout()) {
+            leftPos += 36;
+            for (Renderable renderable : renderables) {
+                if (renderable instanceof ImageButton button) {
+                    button.setPosition(button.getX() + 36, button.getY());
+                }
+            }
+        }
+        addRenderableWidget(new SortButton(leftPos + 176 - 18, topPos + 69));
     }
 
     @Override
@@ -79,21 +126,7 @@ public final class BackpackScreen extends InventoryScreen {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
-        graphics.blit(BACKGROUND, leftPos, topPos, 0, 0, imageWidth, TOP_SECTION_HEIGHT);
-
-        int rowsFromSource = Math.min(backpackMenu.rows(), SOURCE_BACKPACK_ROWS);
-        int rowDestinationY = topPos + TOP_SECTION_HEIGHT;
-        graphics.blit(BACKGROUND, leftPos, rowDestinationY, 0, TOP_SECTION_HEIGHT,
-                imageWidth, rowsFromSource * 18);
-        for (int row = SOURCE_BACKPACK_ROWS; row < backpackMenu.rows(); row++) {
-            graphics.blit(BACKGROUND, leftPos, rowDestinationY + row * 18,
-                    0, TOP_SECTION_HEIGHT + (SOURCE_BACKPACK_ROWS - 1) * 18,
-                    imageWidth, 18);
-        }
-
-        int lowerDestinationY = rowDestinationY + backpackMenu.rows() * 18;
-        graphics.blit(BACKGROUND, leftPos, lowerDestinationY, 0, SOURCE_LOWER_Y,
-                imageWidth, LOWER_SECTION_HEIGHT);
+        graphics.blit(background, backgroundLeft(), topPos, 0, 0, imageWidth, imageHeight);
         renderEntityInInventoryFollowsMouse(graphics, leftPos + 51, topPos + 75, 30,
                 leftPos + 51 - mouseX, topPos + 25 - mouseY, minecraft.player);
         alignCuriosButton();
@@ -108,6 +141,10 @@ public final class BackpackScreen extends InventoryScreen {
                 button.setPosition(button.getX(), vanillaY - offset);
             }
         }
+    }
+
+    private int backgroundLeft() {
+        return leftPos - (hasExpandedBackpackLayout() ? 36 : 0);
     }
 
     private void alignCustomNpcTabs() {

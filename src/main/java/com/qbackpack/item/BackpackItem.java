@@ -24,8 +24,8 @@ public final class BackpackItem extends Item {
 
     public BackpackItem(Properties properties, int capacity) {
         super(properties);
-        if (capacity < 9 || capacity > 36 || capacity % 9 != 0) {
-            throw new IllegalArgumentException("Backpack capacity must be 9, 18, 27, or 36");
+        if (capacity != 9 && capacity != 18 && capacity != 27 && capacity != 36 && capacity != 52) {
+            throw new IllegalArgumentException("Backpack capacity must be 9, 18, 27, 36, or 52");
         }
         this.capacity = capacity;
     }

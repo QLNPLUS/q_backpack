@@ -27,6 +27,9 @@ public final class BackpackMenu extends InventoryMenu {
     private static final int HOTBAR_END = 45;
     private static final int OFFHAND_SLOT = 45;
     private static final int BACKPACK_START = 46;
+    private static final int STANDARD_COLUMNS = 9;
+    private static final int NETHERITE_COLUMNS = 13;
+    private static final int NETHERITE_CAPACITY = 52;
 
     private final Player player;
     private final ItemStack openStack;
@@ -52,9 +55,10 @@ public final class BackpackMenu extends InventoryMenu {
 
         Slot anchor = slots.get(PLAYER_INVENTORY_START);
         int backpackTop = anchor.y - extraHeight;
+        int backpackLeft = anchor.x - (columns() - STANDARD_COLUMNS) / 2 * 18;
         for (int slot = 0; slot < capacity; slot++) {
             addSlot(new BackpackSlot(backpackInventory, slot,
-                    anchor.x + slot % 9 * 18, backpackTop + slot / 9 * 18));
+                    backpackLeft + slot % columns() * 18, backpackTop + slot / columns() * 18));
         }
     }
 
@@ -63,14 +67,18 @@ public final class BackpackMenu extends InventoryMenu {
     }
 
     private static int checkedCapacity(int capacity) {
-        if (capacity < 9 || capacity > 36 || capacity % 9 != 0) {
+        if (capacity != 9 && capacity != 18 && capacity != 27 && capacity != 36 && capacity != NETHERITE_CAPACITY) {
             throw new IllegalArgumentException("Invalid backpack capacity: " + capacity);
         }
         return capacity;
     }
 
     public int rows() {
-        return capacity / 9;
+        return capacity / columns();
+    }
+
+    public int columns() {
+        return capacity == NETHERITE_CAPACITY ? NETHERITE_COLUMNS : STANDARD_COLUMNS;
     }
 
     public int extraHeight() {

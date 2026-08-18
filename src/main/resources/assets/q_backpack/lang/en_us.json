@@ -3,6 +3,7 @@
   "item.q_backpack.medium_backpack": "Iron Backpack",
   "item.q_backpack.large_backpack": "Gold Backpack",
   "item.q_backpack.huge_backpack": "Diamond Backpack",
+  "item.q_backpack.netherite_backpack": "Netherite Backpack",
   "tooltip.q_backpack.capacity": "Capacity: %s slots",
   "tooltip.q_backpack.open": "Right-click to equip",
   "tooltip.q_backpack.inventory": "Equip it, then open your inventory",

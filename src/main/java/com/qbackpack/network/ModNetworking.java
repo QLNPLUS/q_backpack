@@ -1,18 +1,24 @@
 package com.qbackpack.network;
 
 import com.qbackpack.QBackpack;
+import com.qbackpack.compat.ClientAmmoSummary;
 import com.qbackpack.item.BackpackItem;
 import com.qbackpack.menu.BackpackMenu;
 import com.qbackpack.curios.CurioBackpacks;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class ModNetworking {
-    private static final String PROTOCOL = "2";
+    private static final String PROTOCOL = "3";
     public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder
             .named(new ResourceLocation(QBackpack.MOD_ID, "main"))
             .networkProtocolVersion(() -> PROTOCOL)
@@ -57,7 +63,7 @@ public final class ModNetworking {
                 })
                 .add();
 
-        CHANNEL.messageBuilder(SortBackpackMessage.class, id, NetworkDirection.PLAY_TO_SERVER)
+        CHANNEL.messageBuilder(SortBackpackMessage.class, id++, NetworkDirection.PLAY_TO_SERVER)
                 .encoder((message, buffer) -> {})
                 .decoder(buffer -> new SortBackpackMessage())
                 .consumerMainThread((message, contextSupplier) -> {
@@ -67,6 +73,15 @@ public final class ModNetworking {
                         menu.sort();
                     }
                     context.setPacketHandled(true);
+                })
+                .add();
+
+        CHANNEL.messageBuilder(TaczAmmoSummaryMessage.class, id, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(ModNetworking::encodeTaczAmmoSummary)
+                .decoder(ModNetworking::decodeTaczAmmoSummary)
+                .consumerMainThread((message, contextSupplier) -> {
+                    ClientAmmoSummary.update(message.stacks());
+                    contextSupplier.get().setPacketHandled(true);
                 })
                 .add();
     }
@@ -83,7 +98,26 @@ public final class ModNetworking {
         CHANNEL.sendToServer(new CloseBackpackMessage());
     }
 
+    public static void syncTaczAmmo(ServerPlayer player, List<ItemStack> stacks) {
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new TaczAmmoSummaryMessage(stacks));
+    }
+
+    private static void encodeTaczAmmoSummary(TaczAmmoSummaryMessage message, FriendlyByteBuf buffer) {
+        buffer.writeVarInt(message.stacks().size());
+        message.stacks().forEach(buffer::writeItem);
+    }
+
+    private static TaczAmmoSummaryMessage decodeTaczAmmoSummary(FriendlyByteBuf buffer) {
+        int size = buffer.readVarInt();
+        List<ItemStack> stacks = new ArrayList<>(size);
+        for (int index = 0; index < size; index++) {
+            stacks.add(buffer.readItem());
+        }
+        return new TaczAmmoSummaryMessage(stacks);
+    }
+
     private record OpenBackpackMessage() {}
     private record CloseBackpackMessage() {}
     private record SortBackpackMessage() {}
+    private record TaczAmmoSummaryMessage(List<ItemStack> stacks) {}
 }

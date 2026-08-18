@@ -1,7 +1,7 @@
 # Q Backpack
 
 Q Backpack is a lightweight, standalone Curios backpack mod for Minecraft 1.20.1 Forge.
-It adds four upgradeable backpacks whose storage is integrated directly into the normal
+It adds five upgradeable backpacks whose storage is integrated directly into the normal
 player inventory screen.
 
 ## Features
@@ -10,6 +10,7 @@ player inventory screen.
 - Iron Backpack: 18 slots
 - Gold Backpack: 27 slots
 - Diamond Backpack: 36 slots
+- Netherite Backpack: 52 slots (4 rows x 13 columns)
 - Equipped in the Curios `back` slot
 - Backpack storage integrated into the player inventory screen
 - Automatic pickup overflow when the player inventory is full
@@ -18,7 +19,8 @@ player inventory screen.
 - Non-empty backpacks cannot be unequipped
 - Backpack nesting prevention
 - Separate item textures and wearable models for every tier
-- Upgrade recipes for all four tiers
+- Resource-pack replaceable wearable JSON models and GUI textures for every tier
+- Upgrade recipes for all five tiers
 
 ## Requirements
 
@@ -28,6 +30,18 @@ player inventory screen.
 - Java 17
 
 Quark is not required.
+
+## Resource Pack Paths
+
+Each tier has an independent wearable model and GUI texture:
+
+- `assets/q_backpack/models/wearable/<tier>_backpack.json`
+- `assets/q_backpack/textures/block/<tier>_backpack.png`
+- `assets/q_backpack/textures/gui/<tier>_backpack.png`
+
+The internal tier names are `small`, `medium`, `large`, and `huge`. Wearable models use
+the vanilla Java Block/Item JSON format exported by Blockbench. The model is centered at
+`[8, 8, 8]` before being attached to the player's body.
 
 ## Relationship to Quark
 

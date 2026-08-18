@@ -3,10 +3,6 @@ package com.qbackpack.client;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.qbackpack.QBackpack;
 import com.qbackpack.client.render.BackpackRenderer;
-import com.qbackpack.client.render.model.HugeBackpackModel;
-import com.qbackpack.client.render.model.LargeBackpackModel;
-import com.qbackpack.client.render.model.MediumBackpackModel;
-import com.qbackpack.client.render.model.SmallBackpackModel;
 import com.qbackpack.client.screen.BackpackScreen;
 import com.qbackpack.curios.CurioBackpacks;
 import com.qbackpack.init.ModItems;
@@ -18,7 +14,7 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.event.TickEvent;
@@ -48,13 +44,15 @@ public final class ClientEvents {
             event.enqueueWork(() -> {
                 registerBackpackScreen();
                 CuriosRendererRegistry.register(ModItems.SMALL_BACKPACK.get(), () -> new BackpackRenderer(
-                        SmallBackpackModel.LAYER, SmallBackpackModel.TEXTURE, SmallBackpackModel::new));
+                        BackpackRenderer.SMALL_MODEL));
                 CuriosRendererRegistry.register(ModItems.MEDIUM_BACKPACK.get(), () -> new BackpackRenderer(
-                        MediumBackpackModel.LAYER, MediumBackpackModel.TEXTURE, MediumBackpackModel::new));
+                        BackpackRenderer.MEDIUM_MODEL));
                 CuriosRendererRegistry.register(ModItems.LARGE_BACKPACK.get(), () -> new BackpackRenderer(
-                        LargeBackpackModel.LAYER, LargeBackpackModel.TEXTURE, LargeBackpackModel::new));
+                        BackpackRenderer.LARGE_MODEL));
                 CuriosRendererRegistry.register(ModItems.HUGE_BACKPACK.get(), () -> new BackpackRenderer(
-                        HugeBackpackModel.LAYER, HugeBackpackModel.TEXTURE, HugeBackpackModel::new));
+                        BackpackRenderer.HUGE_MODEL));
+                CuriosRendererRegistry.register(ModItems.NETHERITE_BACKPACK.get(), () -> new BackpackRenderer(
+                        BackpackRenderer.NETHERITE_MODEL));
             });
         }
 
@@ -71,11 +69,12 @@ public final class ClientEvents {
         }
 
         @SubscribeEvent
-        public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
-            event.registerLayerDefinition(SmallBackpackModel.LAYER, SmallBackpackModel::createLayer);
-            event.registerLayerDefinition(MediumBackpackModel.LAYER, MediumBackpackModel::createLayer);
-            event.registerLayerDefinition(LargeBackpackModel.LAYER, LargeBackpackModel::createLayer);
-            event.registerLayerDefinition(HugeBackpackModel.LAYER, HugeBackpackModel::createLayer);
+        public static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
+            event.register(BackpackRenderer.SMALL_MODEL);
+            event.register(BackpackRenderer.MEDIUM_MODEL);
+            event.register(BackpackRenderer.LARGE_MODEL);
+            event.register(BackpackRenderer.HUGE_MODEL);
+            event.register(BackpackRenderer.NETHERITE_MODEL);
         }
     }
 
