@@ -10,6 +10,9 @@
     "TaczGunAnimationStateContextMixin",
     "TaczGunHudOverlayMixin"
   ],
+  "client": [
+    "AttributesGuiMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }

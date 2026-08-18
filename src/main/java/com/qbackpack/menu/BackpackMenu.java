@@ -5,8 +5,6 @@ import com.qbackpack.init.ModMenus;
 import com.qbackpack.item.BackpackItem;
 import com.qbackpack.sort.BackpackSorter;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -111,8 +109,6 @@ public final class BackpackMenu extends InventoryMenu {
         ItemStack current = slot.getItem();
         ItemStack original = current.copy();
         int backpackEnd = BACKPACK_START + capacity;
-        EquipmentSlot equipmentSlot = Mob.getEquipmentSlotForItem(current);
-        int equipmentIndex = 8 - equipmentSlot.getIndex();
 
         if (index < PLAYER_INVENTORY_START || index == OFFHAND_SLOT) {
             if (!moveItemStackTo(current, PLAYER_INVENTORY_START, HOTBAR_END, false)
@@ -122,18 +118,9 @@ public final class BackpackMenu extends InventoryMenu {
             if (index == 0) {
                 slot.onQuickCraft(current, original);
             }
-        } else if (equipmentSlot.getType() == EquipmentSlot.Type.ARMOR
-                && !slots.get(equipmentIndex).hasItem()) {
-            if (!moveItemStackTo(current, equipmentIndex, equipmentIndex + 1, false)) {
-                return ItemStack.EMPTY;
-            }
-        } else if (equipmentSlot == EquipmentSlot.OFFHAND && !slots.get(OFFHAND_SLOT).hasItem()) {
-            if (!moveItemStackTo(current, OFFHAND_SLOT, OFFHAND_SLOT + 1, false)) {
-                return ItemStack.EMPTY;
-            }
         } else if (index < PLAYER_INVENTORY_END) {
-            if (!moveItemStackTo(current, BACKPACK_START, backpackEnd, false)
-                    && !moveItemStackTo(current, HOTBAR_START, HOTBAR_END, false)) {
+            if (!moveItemStackTo(current, HOTBAR_START, HOTBAR_END, false)
+                    && !moveItemStackTo(current, BACKPACK_START, backpackEnd, false)) {
                 return ItemStack.EMPTY;
             }
         } else if (index < HOTBAR_END) {
@@ -142,7 +129,8 @@ public final class BackpackMenu extends InventoryMenu {
                 return ItemStack.EMPTY;
             }
         } else if (index >= BACKPACK_START) {
-            if (!moveItemStackTo(current, PLAYER_INVENTORY_START, HOTBAR_END, false)) {
+            if (!moveItemStackTo(current, HOTBAR_START, HOTBAR_END, false)
+                    && !moveItemStackTo(current, PLAYER_INVENTORY_START, PLAYER_INVENTORY_END, false)) {
                 return ItemStack.EMPTY;
             }
         } else {
